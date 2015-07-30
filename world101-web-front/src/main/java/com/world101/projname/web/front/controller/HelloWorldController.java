@@ -9,7 +9,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.world101.projname.web.front.service.spec.MessageGenerater;
 
 @Controller
-@RequestMapping("helloworld")
+@RequestMapping("/helloworld")
 public class HelloWorldController {
 
 	private final MessageGenerater messageGenerater;
