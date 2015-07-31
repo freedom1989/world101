@@ -14,17 +14,12 @@
   <url>http://maven.apache.org</url>
   <dependencies>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-    
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-context</artifactId>
+      <groupId>com.world101</groupId>
+      <artifactId>world101-base-deps</artifactId>
+      <type>pom</type>
+      <version>1.0-SNAPSHOT</version>
     </dependency>
 
-    <!-- inner dependencies -->
     <dependency>
       <groupId>com.world101</groupId>
       <artifactId>world101-service-spec</artifactId>
