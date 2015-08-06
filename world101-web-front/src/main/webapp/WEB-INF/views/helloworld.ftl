@@ -1,3 +1,4 @@
+<#import "/spring.ftl" as spring />
 <!DOCTYPE html>
 <html>
 <head>
@@ -6,7 +7,7 @@
 	<title>example page</title>
 </head>
 <body>
-	hello ${message}!
+	<@spring.message "world101.hello" /> ${message}!
 	<button id='btn' onclick="onBtnClick()">click here</button>
 	
 	<script type="text/javascript" src="js/helloworld.js"></script>
