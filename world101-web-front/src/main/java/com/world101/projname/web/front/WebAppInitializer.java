@@ -19,5 +19,5 @@ public class WebAppInitializer extends
 	protected String[] getServletMappings() {
 		return new String[] { "/" };
 	}
-
+	
 }

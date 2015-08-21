@@ -8,11 +8,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import com.google.common.base.Objects;
 
 @Entity
-@Table(name = "user")
+@Table(name = "user", uniqueConstraints = @UniqueConstraint(columnNames = { "login_name" }))
 public class UserDto implements Serializable {
 
 	/**
@@ -20,21 +21,37 @@ public class UserDto implements Serializable {
 	 */
 	private static final long serialVersionUID = -1642631808020502616L;
 
-	@Id
-	@Column
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long id;
+	public UserDto() {
 
-	@Column
+	}
+
+	private UserDto(Long id, String loginName, String userName, String password) {
+		super();
+		this.id = id;
+		this.loginName = loginName;
+		this.userName = userName;
+		this.password = password;
+	}
+
+	@Id
+	@Column(name = "id")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	private Long id;
+
+	@Column(name = "login_name", length = 32, unique = true, nullable = false)
 	private String loginName;
+
+	@Column(name = "user_name", length = 64, nullable = false)
 	private String userName;
+
+	@Column(name = "password", length = 32, nullable = false)
 	private String password;
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -71,12 +88,18 @@ public class UserDto implements Serializable {
 	public boolean equals(final Object obj) {
 		if (obj instanceof UserDto) {
 			final UserDto other = (UserDto) obj;
-			return id == other.id && Objects.equal(loginName, other.loginName)
+			return Objects.equal(id, other.id)
+					&& Objects.equal(loginName, other.loginName)
 					&& Objects.equal(userName, other.userName)
 					&& Objects.equal(password, other.password);
 		} else {
 			return false;
 		}
+	}
+
+	public static UserDto valueOf(Long id, String loginName, String userName,
+			String password) {
+		return new UserDto(id, loginName, userName, password);
 	}
 
 }

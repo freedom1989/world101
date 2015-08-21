@@ -1,18 +1,21 @@
 package com.world101.projname.web.front;
 
+import java.util.Properties;
+
+import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
-import org.springframework.orm.jpa.JpaVendorAdapter;
+import org.springframework.jndi.JndiObjectFactoryBean;
+import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.orm.jpa.vendor.Database;
+import org.springframework.orm.jpa.vendor.EclipseLinkJpaVendorAdapter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
@@ -21,29 +24,42 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @EnableJpaRepositories("com.world101.projname.web.front.repositories")
 @ComponentScan(basePackages = { "com.world101.projname" }, excludeFilters = { @Filter(type = FilterType.ANNOTATION, value = EnableWebMvc.class) })
 public class RootConfig {
-	
+
 	@Bean
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory(
-			DataSource dataSource, JpaVendorAdapter jpaVendorAdapter) {
+			DataSource dataSource) {
 		LocalContainerEntityManagerFactoryBean emfb = new LocalContainerEntityManagerFactoryBean();
+
+		EclipseLinkJpaVendorAdapter adapter = new EclipseLinkJpaVendorAdapter();
+		adapter.setGenerateDdl(true);
+		adapter.setShowSql(true);
+		adapter.setDatabase(Database.MYSQL);
+
+		emfb.setJpaVendorAdapter(adapter);
 		emfb.setDataSource(dataSource);
-		emfb.setJpaVendorAdapter(jpaVendorAdapter);
 		emfb.setPackagesToScan("com.world101.projname.web.front.dto");
+
+		Properties jpaProperties = new Properties();
+//		jpaProperties.put("hibernate.hbm2ddl.auto", "create");
+		jpaProperties.put("eclipselink.weaving", "false");
+		emfb.setJpaProperties(jpaProperties);
+
 		return emfb;
 	}
 
 	@Bean
-	public JpaVendorAdapter jpaVendorAdapter() {
-		HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
-		adapter.setGenerateDdl(true);
-		return adapter;
+	public JpaTransactionManager transactionManager(
+			LocalContainerEntityManagerFactoryBean entityManagerFactoryBean) {
+		EntityManagerFactory factory = entityManagerFactoryBean.getObject();
+		return new JpaTransactionManager(factory);
 	}
 
 	@Bean
-	public DataSource dataSource() {
-		return new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2)
-				.addScript("classpath:db/schema.sql")
-				.addScript("classpath:db/testdata.sql").build();
+	public JndiObjectFactoryBean jndiDataSource() {
+		JndiObjectFactoryBean jndiObjectFB = new JndiObjectFactoryBean();
+		jndiObjectFB.setJndiName("jdbc/world101");
+		jndiObjectFB.setResourceRef(true);
+		jndiObjectFB.setProxyInterface(javax.sql.DataSource.class);
+		return jndiObjectFB;
 	}
-	
 }
