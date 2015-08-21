@@ -25,7 +25,7 @@ public class UserDto implements Serializable {
 
 	}
 
-	private UserDto(Long id, String loginName, String userName, String password) {
+	private UserDto(long id, String loginName, String userName, String password) {
 		super();
 		this.id = id;
 		this.loginName = loginName;
@@ -35,8 +35,8 @@ public class UserDto implements Serializable {
 
 	@Id
 	@Column(name = "id")
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
-	private Long id;
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private long id;
 
 	@Column(name = "login_name", length = 32, unique = true, nullable = false)
 	private String loginName;
@@ -47,11 +47,11 @@ public class UserDto implements Serializable {
 	@Column(name = "password", length = 32, nullable = false)
 	private String password;
 
-	public Long getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
@@ -88,8 +88,7 @@ public class UserDto implements Serializable {
 	public boolean equals(final Object obj) {
 		if (obj instanceof UserDto) {
 			final UserDto other = (UserDto) obj;
-			return Objects.equal(id, other.id)
-					&& Objects.equal(loginName, other.loginName)
+			return id == other.id && Objects.equal(loginName, other.loginName)
 					&& Objects.equal(userName, other.userName)
 					&& Objects.equal(password, other.password);
 		} else {
@@ -97,7 +96,7 @@ public class UserDto implements Serializable {
 		}
 	}
 
-	public static UserDto valueOf(Long id, String loginName, String userName,
+	public static UserDto valueOf(long id, String loginName, String userName,
 			String password) {
 		return new UserDto(id, loginName, userName, password);
 	}

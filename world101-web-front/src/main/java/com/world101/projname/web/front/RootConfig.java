@@ -14,8 +14,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jndi.JndiObjectFactoryBean;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.orm.jpa.vendor.Database;
-import org.springframework.orm.jpa.vendor.EclipseLinkJpaVendorAdapter;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
@@ -30,18 +29,16 @@ public class RootConfig {
 			DataSource dataSource) {
 		LocalContainerEntityManagerFactoryBean emfb = new LocalContainerEntityManagerFactoryBean();
 
-		EclipseLinkJpaVendorAdapter adapter = new EclipseLinkJpaVendorAdapter();
+		HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
 		adapter.setGenerateDdl(true);
 		adapter.setShowSql(true);
-		adapter.setDatabase(Database.MYSQL);
 
 		emfb.setJpaVendorAdapter(adapter);
 		emfb.setDataSource(dataSource);
 		emfb.setPackagesToScan("com.world101.projname.web.front.dto");
 
 		Properties jpaProperties = new Properties();
-//		jpaProperties.put("hibernate.hbm2ddl.auto", "create");
-		jpaProperties.put("eclipselink.weaving", "false");
+		jpaProperties.put("hibernate.hbm2ddl.auto", "create-drop");
 		emfb.setJpaProperties(jpaProperties);
 
 		return emfb;
