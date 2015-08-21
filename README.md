@@ -17,5 +17,14 @@ a template project using Spring framework
   * open your eclipse, choose 'file->new->others...->server', choose 'Apache->Tomcat v8.0 server', if you need to specify 'Tomcat Installation Directory', choose your tomcat home directory, say $TOMCAT_HOME. 
   * in 'Add and Remove' step, add 'world101-web-front' to the 'configured'. then click 'finish'
   if no problem, you can see the tomcat server in 'Servers'
+4. configure DataSource in `context.xml` of tomcat. in my case is:
+
+```xml
+<Resource name="jdbc/world101" auth="Container" type="javax.sql.DataSource"
+          maxTotal="100" maxIdle="30" maxWaitMillis="10000"
+          username="freedom" password="qweqwe"
+          url="jdbc:mariadb://localhost/world101"
+          driverClassName="org.mariadb.jdbc.Driver" />
+```
 4. start tomcat server via eclipse. (right click tomcat server in 'Servers' panel, click 'Start')
 5. visit the 'hello world' example via http://localhost:8080/world101-web-front/helloWorld/
